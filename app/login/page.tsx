@@ -86,14 +86,14 @@ export default function LoginPage() {
                         justifyContent: "space-around",
                     }}
                 >
-                    <Image
+                    <img
                         src={icnLogo}
                         alt="icnLogo"
                         width={130}
                         height={130}
                         style={{ marginBottom: 15 }}
                     />
-                    <Image
+                    <img
                         src={kaharsa}
                         alt="icnLogo"
                         width={220}
