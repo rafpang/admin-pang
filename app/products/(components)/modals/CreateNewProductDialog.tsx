@@ -45,6 +45,7 @@ export default function CreateNewProductDialog({
         );
         const startPeriodSGT = formData.get("startPeriodSGT") as string;
         const endPeriodSGT = formData.get("endPeriodSGT") as string;
+        const productDescription = formData.get("productDescription") as string;
 
         const requestBody = {
             productName,
@@ -54,6 +55,7 @@ export default function CreateNewProductDialog({
             nightMaxQuantity: nightTicketQuantity,
             startPeriodSgt: startPeriodSGT,
             endPeriodSgt: endPeriodSGT,
+            productDescription,
         };
         console.log(requestBody);
 
@@ -182,6 +184,16 @@ export default function CreateNewProductDialog({
                             id="endPeriodSGT"
                             name="endPeriodSGT"
                             label="End Period SGT (eg. 2024-11-01) "
+                            variant="standard"
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            autoFocus
+                            margin="dense"
+                            id="productDescription"
+                            name="productDescription"
+                            label="Product Description"
                             variant="standard"
                         />
                     </Grid>

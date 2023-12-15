@@ -22,6 +22,7 @@ type FormDataType = {
     endPeriodSgt: string;
     allocatedMatineeTicketStock: number;
     allocatedNightTicketStock: number;
+    productDescription: string;
 };
 
 type DialogPropTypes = {
@@ -53,6 +54,7 @@ export default function UpdateProductDialog({
         allocatedNightTicketStock: productData.allocatedNightTicketStock,
         startPeriodSgt: trimDateString(productData.startPeriodSgt),
         endPeriodSgt: trimDateString(productData.endPeriodSgt),
+        productDescription: productData.productDescription,
     });
 
     const handleUpdateProduct = async () => {
@@ -235,6 +237,18 @@ export default function UpdateProductDialog({
                             value={formData.endPeriodSgt}
                             onChange={(e) =>
                                 handleInputChange(e, "endPeriodSgt")
+                            }
+                        />
+                        <TextField
+                            fullWidth
+                            autoFocus
+                            margin="dense"
+                            id="productDescription"
+                            label="Product Description"
+                            variant="standard"
+                            value={formData.productDescription}
+                            onChange={(e) =>
+                                handleInputChange(e, "productDescription")
                             }
                         />
                     </Grid>

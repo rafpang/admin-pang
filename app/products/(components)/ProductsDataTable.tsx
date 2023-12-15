@@ -17,11 +17,17 @@ const columns: GridColDef[] = [
     },
     {
         field: "Actions",
-        width: 300,
+        width: 200,
 
         renderCell: (cellValues) => {
             return <ProductDataTableButtonGroup cellValues={cellValues} />;
         },
+    },
+    {
+        field: "productDescription",
+        headerName: "ProductDescription",
+        type: "string",
+        width: 300,
     },
 
     {
