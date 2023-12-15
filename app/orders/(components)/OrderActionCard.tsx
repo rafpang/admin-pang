@@ -8,19 +8,20 @@ import { useRouter } from "next/navigation";
 type NotificationCardPropTypes = {
     name: string;
     description: string;
-    navigateTo: string;
+    onClick: React.MouseEventHandler<HTMLDivElement>;
 };
 
 export default function OrderActionCard({
     name,
     description,
-    navigateTo,
+
+    onClick,
 }: NotificationCardPropTypes) {
     const router = useRouter();
     return (
         <Card
             sx={{ width: 345, cursor: "pointer", boxShadow: 10, height: 130 }}
-            onClick={() => router.push(`/orders/${navigateTo}`)}
+            onClick={onClick}
         >
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">

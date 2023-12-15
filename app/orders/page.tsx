@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useCheckAuth } from "../hooks/auth";
 import { useAuthorizedInitialFetch } from "../hooks/fetch";
 import Navbar from "../(components)/Navbar";
@@ -12,10 +12,12 @@ import {
 } from "@mui/material";
 import OrderDataTable from "./(components)/OrderDataTable";
 import OrderActionCard from "./(components)/OrderActionCard";
+import CreateOrderManuallyDialog from "./(components)/modals/CreateOrderManuallyDialog";
 
 export default function OrdersPage() {
-    useCheckAuth();
+    // useCheckAuth();
     const [isLoading, data] = useAuthorizedInitialFetch("/orders/protected");
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     return (
         <Container>
             <Navbar />
@@ -70,7 +72,11 @@ export default function OrdersPage() {
                     description={
                         "Create and send tickets manually, USE ONLY IF a buyer is struggling using Stripe."
                     }
-                    navigateTo="all"
+                    onClick={() => setIsCreateModalOpen(true)}
+                />
+                <CreateOrderManuallyDialog
+                    open={isCreateModalOpen}
+                    handleClose={() => setIsCreateModalOpen(false)}
                 />
             </Grid>
             <Typography
