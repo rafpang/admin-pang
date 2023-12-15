@@ -3,7 +3,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/navigation";
 
 type NotificationCardPropTypes = {
     name: string;
@@ -14,10 +13,8 @@ type NotificationCardPropTypes = {
 export default function OrderActionCard({
     name,
     description,
-
     onClick,
 }: NotificationCardPropTypes) {
-    const router = useRouter();
     return (
         <Card
             sx={{ width: 345, cursor: "pointer", boxShadow: 10, height: 130 }}
