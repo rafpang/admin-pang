@@ -11,11 +11,11 @@ import {
     CircularProgress,
     MenuItem,
 } from "@mui/material";
-import Cookies from "js-cookie";
-import { API_URL } from "@/app/settings";
+import Autocomplete from "@mui/material/Autocomplete";
 import { useRouter } from "next/navigation";
 import { usePublicInitialFetch } from "@/app/hooks/fetch";
-import Autocomplete from "@mui/material/Autocomplete";
+import { API_URL } from "@/app/settings";
+import Cookies from "js-cookie";
 
 type Order = {
     audienceName: string;
@@ -38,6 +38,7 @@ export default function CreateOrderManuallyDialog({
     handleClose,
 }: DialogPropTypes) {
     const router = useRouter();
+    const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [isLoading, products] = usePublicInitialFetch("/products");
 
     const [buyerName, setBuyerName] = useState("");
@@ -70,10 +71,7 @@ export default function CreateOrderManuallyDialog({
         setOrders(updatedOrders);
     };
 
-    const handleCreateOrder = async (e: any) => {
-        e.preventDefault();
-
-        // Trim white spaces in the fields
+    const handleCreateOrder = async () => {
         const trimmedBuyerName = buyerName.trim();
         const trimmedBuyerPhoneNumber = buyerPhoneNumber.trim();
         const trimmedBuyerEmail = buyerEmail.trim();
@@ -88,32 +86,33 @@ export default function CreateOrderManuallyDialog({
             buyerPhoneNumber: trimmedBuyerPhoneNumber,
             buyerEmail: trimmedBuyerEmail,
             orders: trimmedOrders,
+            paymentMethod: paymentMethod.trim(),
+            paymentStatus: "successful",
         };
 
-        console.log(requestBody);
-        // try {
-        //     const response = await fetch(`${API_URL}/orders/protected`, {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //             Authorization: `Bearer ${Cookies.get(
-        //                 "access_token_cookie"
-        //             )}`,
-        //         },
-        //         body: JSON.stringify(requestBody),
-        //     });
+        try {
+            const response = await fetch(`${API_URL}/orders/protected`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${Cookies.get(
+                        "access_token_cookie"
+                    )}`,
+                },
+                body: JSON.stringify(requestBody),
+            });
 
-        //     if (response.ok) {
-        //         router.push("/orders");
-        //         console.log("Order created successfully");
-        //     } else {
-        //         console.error("Error creating order");
-        //     }
-        // } catch (error) {
-        //     console.error("Fetch error:", error);
-        // }
+            if (response.ok) {
+                router.push("/orders");
+                console.log("Order created successfully");
+            } else {
+                console.error("Error creating order");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+        }
 
-        // handleClose();
+        handleClose();
     };
 
     return (
@@ -185,6 +184,30 @@ export default function CreateOrderManuallyDialog({
                                     />
                                 </Grid>
 
+                                {/* Payment Method */}
+                                <Grid item xs={12}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={["card", "paynow", "transfer"]}
+                                        value={paymentMethod}
+                                        onChange={(_, newValue) =>
+                                            setPaymentMethod(newValue as string)
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                required
+                                                fullWidth
+                                                autoFocus
+                                                margin="dense"
+                                                id="paymentMethod"
+                                                label="Payment Method"
+                                                variant="standard"
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+
                                 {/* Order Details */}
                                 {orders.map((order, index) => (
                                     <Grid
@@ -251,7 +274,6 @@ export default function CreateOrderManuallyDialog({
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={4}>
-                                            {/* Change TextField to Select */}
                                             <TextField
                                                 required
                                                 fullWidth
