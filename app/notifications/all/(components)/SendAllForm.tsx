@@ -1,8 +1,16 @@
-"use client";
 import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { FieldValues, FieldError, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, FieldError } from "react-hook-form";
 import SuccessToast from "../../(components)/SuccessToast";
+import { API_URL } from "@/app/settings";
+import Cookies from "js-cookie";
+
+type FormValues = {
+    emailName: string;
+    emailSubject: string;
+    emailHeading: string;
+    emailBody: string;
+};
 
 export default function SendAllForm() {
     const [openSuccessToast, setOpenSuccessToast] = useState<boolean>(false);
@@ -11,16 +19,45 @@ export default function SendAllForm() {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<FieldValues>();
+    } = useForm<FormValues>();
 
-    function onSendManySubmit(data: FieldValues): void {
-        setTimeout(() => {
-            console.log("form submitted");
-            console.log(data);
+    const onSendManySubmit: SubmitHandler<FormValues> = async (data) => {
+        const requestBody = {
+            ...data,
+        };
+
+        try {
+            const response = await fetch(
+                `${API_URL}/email/protected/notifications/all`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Cookies.get(
+                            "access_token_cookie"
+                        )}`,
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
+
+            if (!response.ok) {
+                console.error(
+                    `Error: ${response.status} - ${response.statusText}`
+                );
+
+                return;
+            }
+
+            const responseData = await response.json();
+            console.log("Response:", responseData);
+
             setOpenSuccessToast(true);
             reset();
-        }, 1500);
-    }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
     return (
         <Container maxWidth="sm">
@@ -33,47 +70,70 @@ export default function SendAllForm() {
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            id="subject"
-                            label="Subject"
+                            id="emailName"
+                            label="Email Name"
                             variant="outlined"
-                            {...register("subject", {
-                                required: "Subject is required",
-                                maxLength: {
-                                    value: 100,
-                                    message:
-                                        "Subject should not exceed 100 characters",
-                                },
+                            {...register("emailName", {
+                                required: "Email Name is required",
                             })}
-                            error={Boolean(errors.subject)}
+                            error={Boolean(errors.emailName)}
                         />
-                        {errors.subject && (
+                        {errors.emailName && (
                             <Typography color="error" variant="body2">
-                                {(errors.subject as FieldError).message}
+                                {(errors.emailName as FieldError).message}
                             </Typography>
                         )}
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            id="text"
-                            label="Text"
+                            id="emailSubject"
+                            label="Email Subject"
+                            variant="outlined"
+                            {...register("emailSubject", {
+                                required: "Email Subject is required",
+                            })}
+                            error={Boolean(errors.emailSubject)}
+                        />
+                        {errors.emailSubject && (
+                            <Typography color="error" variant="body2">
+                                {(errors.emailSubject as FieldError).message}
+                            </Typography>
+                        )}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            id="emailHeading"
+                            label="Email Heading"
+                            variant="outlined"
+                            {...register("emailHeading", {
+                                required: "Email Heading is required",
+                            })}
+                            error={Boolean(errors.emailHeading)}
+                        />
+                        {errors.emailHeading && (
+                            <Typography color="error" variant="body2">
+                                {(errors.emailHeading as FieldError).message}
+                            </Typography>
+                        )}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            id="emailBody"
+                            label="Email Body"
                             multiline
                             rows={6}
                             variant="outlined"
-                            {...register("text", {
-                                required: "Text is required",
-                                maxLength: {
-                                    value: 300,
-                                    message:
-                                        "Text should not exceed 300 characters",
-                                },
+                            {...register("emailBody", {
+                                required: "Email Body is required",
                             })}
-                            error={Boolean(errors.text)}
+                            error={Boolean(errors.emailBody)}
                         />
-
-                        {errors.text && (
+                        {errors.emailBody && (
                             <Typography color="error" variant="body2">
-                                {(errors.text as FieldError).message}
+                                {(errors.emailBody as FieldError).message}
                             </Typography>
                         )}
                     </Grid>
