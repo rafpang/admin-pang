@@ -24,6 +24,7 @@ export function useAuthorizedInitialFetch(fetchURL: string): any[] {
                             "access_token_cookie"
                         )}`,
                     },
+                    referrerPolicy: "unsafe-url",
                 });
 
                 if (response.status === 401) {
