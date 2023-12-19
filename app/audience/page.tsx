@@ -14,7 +14,9 @@ export default function AudiencePage() {
         "https://api.icnmusical.com/api/v1/audiences/protected"
     );
     const [isLoadingAttendanceStats, attendanceStats] =
-        useAuthorizedInitialFetch("/audiences/protected/statistics");
+        useAuthorizedInitialFetch(
+            "https://api.icnmusical.com/api/v1/audiences/protected/statistics"
+        );
     const {
         matineeAttendanceAddDelta,
         matineeAttendanceMinusDelta,
