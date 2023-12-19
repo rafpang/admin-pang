@@ -11,7 +11,7 @@ import { useAttendanceContext } from "../(contexts)/AttendanceContext";
 export default function AudiencePage() {
     useCheckAuth();
     const [isLoading, data] = useAuthorizedInitialFetch(
-        "https://api.icnmusical.com/audiences/protected"
+        "https://api.icnmusical.com/api/v1/audiences/protected"
     );
     const [isLoadingAttendanceStats, attendanceStats] =
         useAuthorizedInitialFetch("/audiences/protected/statistics");

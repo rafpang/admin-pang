@@ -17,7 +17,7 @@ import CreateOrderManuallyDialog from "./(components)/modals/CreateOrderManually
 export default function OrdersPage() {
     useCheckAuth();
     const [isLoading, data] = useAuthorizedInitialFetch(
-        "https://api.icnmusical.com/orders/protected"
+        "https://api.icnmusical.com/api/v1/orders/protected"
     );
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     return (
