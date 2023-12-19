@@ -13,7 +13,7 @@ export default function MainPage() {
         "https://api.icnmusical.com/api/v1/products/protected/statistics/sold"
     );
     const [isOrderStatsLoading, orderStats] = useAuthorizedInitialFetch(
-        "https://api.icnmusical.com/api/v1/products/protected/statistics/"
+        "https://api.icnmusical.com/api/v1/orders/protected/statistics/"
     );
 
     return (
