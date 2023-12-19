@@ -72,8 +72,8 @@ export default function CreateNewProductDialog({
             });
 
             if (response.ok) {
-                router.push("/products");
-                // handleClose();
+                // router.push("/products");
+                // handleClose();x
                 console.log("Product added successfully");
             } else {
                 console.error("Error adding product");
@@ -82,7 +82,7 @@ export default function CreateNewProductDialog({
             console.error("Fetch error:", error);
         }
 
-        handleClose();
+        // handleClose();
     };
 
     return (
