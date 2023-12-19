@@ -10,10 +10,10 @@ import { useAuthorizedInitialFetch } from "./hooks/fetch";
 export default function MainPage() {
     useCheckAuth();
     const [isProductStatsLoading, productStats] = useAuthorizedInitialFetch(
-        "/products/protected/statistics/sold"
+        "https://api.icnmusical.com/api/v1/products/protected/statistics/sold"
     );
     const [isOrderStatsLoading, orderStats] = useAuthorizedInitialFetch(
-        "/orders/protected/statistics"
+        "https://api.icnmusical.com/api/v1/products/protected/statistics/"
     );
 
     return (
