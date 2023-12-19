@@ -1,16 +1,15 @@
 "use client";
 import { useEffect } from "react";
 import { API_URL } from "../settings";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "next/navigation";
+
 import Cookies from "js-cookie";
 
 export function useCheckAuth() {
-    const router = useRouter();
     useEffect(() => {
         async function checkAuth() {
             if (!Cookies.get("access_token_cookie")) {
-                router.push("/login");
-                return;
+                redirect("/login");
             }
             try {
                 const response = await fetch(
@@ -26,7 +25,7 @@ export function useCheckAuth() {
                 );
 
                 if (!response.ok) {
-                    router.push("/login");
+                    redirect("/login");
                 }
             } catch (err) {
                 console.log(err);
@@ -37,11 +36,10 @@ export function useCheckAuth() {
 }
 
 export function useCheckAuthInLoginOrRegister() {
-    const router = useRouter();
     useEffect(() => {
         async function checkAuth() {
             if (Cookies.get("access_token_cookie")) {
-                router.push("/");
+                redirect("/");
             }
         }
         checkAuth();
