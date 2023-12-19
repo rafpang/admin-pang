@@ -4,8 +4,11 @@ import { Container, Grid, Typography } from "@mui/material";
 import Navbar from "../../../app/(components)/Navbar";
 import React from "react";
 import SendFewForm from "./(components)/SendFewForm";
+import { useCheckAuth } from "@/app/hooks/auth";
 
 export default function SendFewPage() {
+    useCheckAuth();
+
     return (
         <Container sx={{ minWidth: "100vw" }}>
             <Navbar />

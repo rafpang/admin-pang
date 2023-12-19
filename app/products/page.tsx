@@ -15,7 +15,7 @@ import CreateNewProductDialog from "./(components)/modals/CreateNewProductDialog
 import ProductActionCard from "./(components)/ProductActionCard";
 
 export default function ProductsPage() {
-    // useCheckAuth();
+    useCheckAuth();
     const [isLoading, data] = usePublicInitialFetch("/products/");
     const [createOpen, setCreateOpen] = useState<boolean>(false);
 
