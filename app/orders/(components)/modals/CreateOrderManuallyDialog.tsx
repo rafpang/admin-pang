@@ -91,16 +91,20 @@ export default function CreateOrderManuallyDialog({
         };
 
         try {
-            const response = await fetch(`${API_URL}/orders/protected`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${Cookies.get(
-                        "access_token_cookie"
-                    )}`,
-                },
-                body: JSON.stringify(requestBody),
-            });
+            const response = await fetch(
+                `https:/api.icnmusical.com/api/v1/orders/protected`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Cookies.get(
+                            "access_token_cookie"
+                        )}`,
+                        referrerPolicy: "unsafe-url",
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
 
             if (response.ok) {
                 router.push("/orders");
