@@ -60,7 +60,7 @@ export default function CreateNewProductDialog({
         console.log(requestBody);
 
         try {
-            const response = await fetch(`${API_URL}/products/protected`, {
+            const response = await fetch(`${API_URL}/products/protected/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
