@@ -17,7 +17,7 @@ export function useAuthorizedInitialFetch(fetchURL: string): any[] {
             }
             try {
                 setIsLoading(true);
-                const response = await fetch(`${API_URL}${fetchURL}`, {
+                const response = await fetch(`${fetchURL}`, {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${Cookies.get(
