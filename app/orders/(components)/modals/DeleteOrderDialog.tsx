@@ -25,7 +25,7 @@ export default function DeleteOrderDialog({
 
     async function handleDelete(e: any) {
         e.preventDefault();
-        await fetch(
+        const response = await fetch(
             deleteAudience
                 ? `${API_URL}/orders/protected/audiences/${orderId}`
                 : `${API_URL}/orders/protected/${orderId}`,
@@ -38,8 +38,7 @@ export default function DeleteOrderDialog({
                 },
             }
         );
-
-        handleClose();
+        if (response.ok) handleClose();
     }
 
     return (

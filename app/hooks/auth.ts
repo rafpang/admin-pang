@@ -6,10 +6,11 @@ import { useRouter, redirect } from "next/navigation";
 import Cookies from "js-cookie";
 
 export function useCheckAuth() {
+    const router = useRouter();
     useEffect(() => {
         async function checkAuth() {
             if (!Cookies.get("access_token_cookie")) {
-                redirect("/login");
+                router.push("/login");
             }
             try {
                 const response = await fetch(
@@ -25,7 +26,7 @@ export function useCheckAuth() {
                 );
 
                 if (!response.ok) {
-                    redirect("/login");
+                    router.push("/login");
                 }
             } catch (err) {
                 console.log(err);
