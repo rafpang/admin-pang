@@ -23,7 +23,8 @@ export default function DeleteOrderDialog({
 }: DialogPropTypes) {
     const [deleteAudience, setDeleteAudience] = useState<boolean>(false);
 
-    async function handleDelete() {
+    async function handleDelete(e: any) {
+        e.preventDefault();
         await fetch(
             deleteAudience
                 ? `${API_URL}/orders/protected/audiences/${orderId}`
