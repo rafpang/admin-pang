@@ -7,16 +7,15 @@ import { useAuthorizedInitialFetch } from "../hooks/fetch";
 import { useCheckAuth } from "../hooks/auth";
 import StatCard from "../(components)/(small-components)/StatCard";
 import { useAttendanceContext } from "../(contexts)/AttendanceContext";
+import useConfirmedAudiences from "./useConfirmedAudiences";
 
 export default function AudiencePage() {
     useCheckAuth();
-    const [isLoading, data] = useAuthorizedInitialFetch(
-        "https://api.icnmusical.com/api/v1/audiences/protected"
-    );
     const [isLoadingAttendanceStats, attendanceStats] =
         useAuthorizedInitialFetch(
             "https://api.icnmusical.com/api/v1/audiences/protected/statistics"
         );
+    const { isLoading, filteredAudienceData } = useConfirmedAudiences();
     const {
         matineeAttendanceAddDelta,
         matineeAttendanceMinusDelta,
@@ -142,7 +141,7 @@ export default function AudiencePage() {
                         </Grid>
                     </Grid>
                 ) : (
-                    <AudienceDataTable rows={data} />
+                    <AudienceDataTable rows={filteredAudienceData} />
                 )}
             </Container>
         </Container>
