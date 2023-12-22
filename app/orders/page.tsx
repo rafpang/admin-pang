@@ -43,7 +43,7 @@ export default function OrdersPage() {
             >
                 <strong>Orders</strong> shows all of the orders of ICN 2024. If
                 the <strong>payment status</strong> is <i>pending</i> or{" "}
-                <i>unknown</i>, the order is still ungoing (in Stripe checkout).
+                <i>unknown</i>, the order is still ongoing (in Stripe checkout).
                 The table below can be used as if it is an excel table, click on
                 the column to filter and find certain values.
             </Typography>

@@ -46,9 +46,10 @@ export default function AudiencePage() {
             >
                 <strong>Audience</strong> shows all of the audience attending
                 ICN 2024. If an <strong>order</strong> is in <i>pending</i> or{" "}
-                <i>failed</i> status, the audience would not be in the following
-                table. The table below can be used as if it is an excel table,
-                click on the column to filter and find certain values.
+                <i>failed</i> status, the tickets associated with that order
+                would not be in the following table. The table below can be used
+                as if it is an excel table, click on the column to filter and
+                find certain values.
             </Typography>
             {isLoadingAttendanceStats ? (
                 <Grid
