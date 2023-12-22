@@ -21,6 +21,16 @@ export const AttendanceButton = memo(function AttendanceButton({
     } = useAttendanceContext();
 
     const handleToggleAttendance = async () => {
+        setAttendance((prevValue) => !prevValue);
+        if (attendanceShowTime === "matinee") {
+            !attendance
+                ? setMatineeAttendanceAddDelta((delta) => delta + 1)
+                : setMatineeAttendanceMinusDelta((delta) => delta + 1);
+        } else if (attendanceShowTime === "night") {
+            !attendance
+                ? setNightAttendanceAddDelta((delta) => delta + 1)
+                : setNightAttendanceMinusDelta((delta) => delta + 1);
+        }
         try {
             const response = await fetch(
                 `${API_URL}/audiences/attendance/${audienceId}`,
@@ -34,19 +44,7 @@ export const AttendanceButton = memo(function AttendanceButton({
                     }),
                 }
             );
-
             if (response.ok) {
-                if (attendanceShowTime === "matinee") {
-                    !attendance
-                        ? setMatineeAttendanceAddDelta((delta) => delta + 1)
-                        : setMatineeAttendanceMinusDelta((delta) => delta + 1);
-                } else if (attendanceShowTime === "night") {
-                    !attendance
-                        ? setNightAttendanceAddDelta((delta) => delta + 1)
-                        : setNightAttendanceMinusDelta((delta) => delta + 1);
-                }
-                setAttendance((prevValue) => !prevValue);
-
                 console.log("Attendance Marked");
             } else {
                 console.error("Error marking Attendance");
