@@ -60,16 +60,19 @@ export default function CreateNewProductDialog({
         console.log(requestBody);
 
         try {
-            const response = await fetch(`${API_URL}/products/protected/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${Cookies.get(
-                        "access_token_cookie"
-                    )}`,
-                },
-                body: JSON.stringify(requestBody),
-            });
+            const response = await fetch(
+                `https://api.icnmusical.com/api/v1/products/protected/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Cookies.get(
+                            "access_token_cookie"
+                        )}`,
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
 
             if (response.ok) {
                 // router.push("/products");
