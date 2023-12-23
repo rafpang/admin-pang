@@ -38,6 +38,7 @@ export default function CreateOrderManuallyDialog({
     handleClose,
 }: DialogPropTypes) {
     const router = useRouter();
+
     const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [isLoading, products] = usePublicInitialFetch("/products");
 
@@ -71,7 +72,8 @@ export default function CreateOrderManuallyDialog({
         setOrders(updatedOrders);
     };
 
-    const handleCreateOrder = async () => {
+    const handleCreateOrder = async (e: any) => {
+        e.preventDefault();
         const trimmedBuyerName = buyerName.trim();
         const trimmedBuyerPhoneNumber = buyerPhoneNumber.trim();
         const trimmedBuyerEmail = buyerEmail.trim();
@@ -106,7 +108,7 @@ export default function CreateOrderManuallyDialog({
             );
 
             if (response.ok) {
-                router.push("/orders");
+                // router.push("/orders");
                 console.log("Order created successfully");
             } else {
                 console.error("Error creating order");
