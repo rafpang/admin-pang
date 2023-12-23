@@ -61,7 +61,7 @@ export default function CreateNewProductDialog({
 
         try {
             const response = await fetch(
-                `https://api.icnmusical.com/api/v1/products/protected/`,
+                `https://api.icnmusical.com/api/v1/products/protected`,
                 {
                     method: "POST",
                     headers: {

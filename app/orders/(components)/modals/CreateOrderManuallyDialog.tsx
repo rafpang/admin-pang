@@ -100,7 +100,6 @@ export default function CreateOrderManuallyDialog({
                         Authorization: `Bearer ${Cookies.get(
                             "access_token_cookie"
                         )}`,
-                        referrerPolicy: "unsafe-url",
                     },
                     body: JSON.stringify(requestBody),
                 }
