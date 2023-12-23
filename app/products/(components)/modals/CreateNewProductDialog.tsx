@@ -26,6 +26,7 @@ export default function CreateNewProductDialog({
     const handleAddProduct = async (
         event: React.FormEvent<HTMLFormElement>
     ) => {
+        event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
         const productName = formData.get("productName") as string;
