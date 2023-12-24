@@ -12,9 +12,7 @@ import {
     MenuItem,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
-import { useRouter } from "next/navigation";
 import { usePublicInitialFetch } from "@/app/hooks/fetch";
-import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
 
 type Order = {
@@ -37,8 +35,6 @@ export default function CreateOrderManuallyDialog({
     open,
     handleClose,
 }: DialogPropTypes) {
-    const router = useRouter();
-
     const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [isLoading, products] = usePublicInitialFetch("/products");
 
