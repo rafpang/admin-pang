@@ -60,8 +60,8 @@ export default function LoginPage() {
                 });
                 router.push("/");
             } else {
+                setErrorLogin(true);
                 setIsLoading(false);
-                setErrorLogin(false);
             }
         } catch (error) {
             setErrorLogin(true);
