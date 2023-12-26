@@ -89,7 +89,14 @@ export default function MainPage() {
                                     marginTop: 2,
                                 }}
                             >
-                                <OrdersStatisticsTable rows={orderStats} />
+                                <OrdersStatisticsTable
+                                    rows={orderStats.filter((order: any) => {
+                                        return (
+                                            order.paymentMethod.toLowerCase() !==
+                                            "unknown"
+                                        );
+                                    })}
+                                />
                             </Container>
                         </Grid>
                     </Grid>

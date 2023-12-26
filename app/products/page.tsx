@@ -13,9 +13,12 @@ import Navbar from "../(components)/Navbar";
 import ProductsDataTable from "./(components)/ProductsDataTable";
 import CreateNewProductDialog from "./(components)/modals/CreateNewProductDialog";
 import ProductActionCard from "./(components)/ProductActionCard";
+import SuccessToast from "../(components)/(small-components)/SuccessToast";
 
 export default function ProductsPage() {
     useCheckAuth();
+
+    const [toastOpen, setToastOpen] = useState(false);
     const [isLoading, data] = usePublicInitialFetch("/products/");
     const [createOpen, setCreateOpen] = useState<boolean>(false);
 
@@ -83,6 +86,7 @@ export default function ProductsPage() {
             <CreateNewProductDialog
                 open={createOpen}
                 handleClose={() => setCreateOpen(false)}
+                setToastOpen={setToastOpen}
             />
             <Container sx={{ marginBottom: 5 }}>
                 {isLoading === true ? (
@@ -102,6 +106,13 @@ export default function ProductsPage() {
                     <ProductsDataTable rows={data} />
                 )}
             </Container>
+            <SuccessToast
+                open={toastOpen}
+                setOpen={setToastOpen}
+                message={
+                    "Product added successfully! Refresh the page to view changes. You may need to refresh a few times."
+                }
+            />
         </Container>
     );
 }

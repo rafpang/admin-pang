@@ -13,7 +13,9 @@ import {
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { usePublicInitialFetch } from "@/app/hooks/fetch";
+import SuccessToast from "@/app/(components)/(small-components)/SuccessToast";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Order = {
     audienceName: string;
@@ -29,16 +31,19 @@ type Product = {
 type DialogPropTypes = {
     open: boolean;
     handleClose: () => void;
+    setToastOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function CreateOrderManuallyDialog({
     open,
     handleClose,
+    setToastOpen,
 }: DialogPropTypes) {
-    const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [isLoading, products] = usePublicInitialFetch("/products");
+    const [isSubmissionLoading, setIsSubmissionLoading] = useState(false);
 
     const [buyerName, setBuyerName] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [buyerPhoneNumber, setBuyerPhoneNumber] = useState("");
     const [buyerEmail, setBuyerEmail] = useState("");
     const [orders, setOrders] = useState<Order[]>([
@@ -89,6 +94,7 @@ export default function CreateOrderManuallyDialog({
         };
 
         try {
+            setIsSubmissionLoading(true);
             const response = await fetch(
                 `https://api.icnmusical.com/api/v1/orders/protected`,
                 {
@@ -104,7 +110,16 @@ export default function CreateOrderManuallyDialog({
             );
 
             if (response.ok) {
-                // router.push("/orders");
+                setToastOpen(true);
+                setIsSubmissionLoading(false);
+
+                setPaymentMethod("");
+                setBuyerEmail("");
+                setBuyerName("");
+                setBuyerPhoneNumber("");
+
+                setOrders([{ audienceName: "", productId: -1, showTime: "" }]);
+
                 console.log("Order created successfully");
             } else {
                 console.error("Error creating order");
@@ -118,14 +133,34 @@ export default function CreateOrderManuallyDialog({
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth>
-            {isLoading ? (
-                <CircularProgress size={120} />
-            ) : (
-                <>
-                    <DialogTitle variant="h3" fontSize={20} marginTop={2}>
-                        Create Order Manually
-                    </DialogTitle>
-                    <DialogContent>
+            <DialogTitle variant="h3" fontSize={20} marginTop={2}>
+                Create Order Manually
+            </DialogTitle>
+            <DialogContent>
+                {isLoading || isSubmissionLoading ? (
+                    <Grid
+                        container
+                        minHeight={300}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <CircularProgress size={120} />
+                        </Grid>
+                    </Grid>
+                ) : (
+                    <>
                         <DialogContentText marginTop={2}>
                             Ensure that you have done the proper guidelines
                             before creating this order. An order must have at
@@ -342,9 +377,9 @@ export default function CreateOrderManuallyDialog({
                                 </Button>
                             </DialogActions>
                         </form>
-                    </DialogContent>
-                </>
-            )}
+                    </>
+                )}
+            </DialogContent>
         </Dialog>
     );
 }

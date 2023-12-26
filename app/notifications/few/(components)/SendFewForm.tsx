@@ -2,7 +2,7 @@
 import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { FieldError, SubmitHandler, useForm } from "react-hook-form";
-import SuccessToast from "../../(components)/SuccessToast";
+import SuccessToast from "../../../(components)/(small-components)/SuccessToast";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Grid,
     Dialog,
@@ -10,19 +10,18 @@ import {
     Button,
 } from "@mui/material";
 import Cookies from "js-cookie";
-import { API_URL } from "@/app/settings";
-import { useRouter } from "next/navigation";
 
 type DialogPropTypes = {
     open: boolean;
     handleClose: () => void;
+    setToastOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function CreateNewProductDialog({
     open,
     handleClose,
+    setToastOpen,
 }: DialogPropTypes) {
-    const router = useRouter();
     const handleAddProduct = async (
         event: React.FormEvent<HTMLFormElement>
     ) => {
@@ -76,8 +75,8 @@ export default function CreateNewProductDialog({
             );
 
             if (response.ok) {
-                // router.push("/products");
-                // handleClose();x
+                setToastOpen(true);
+
                 console.log("Product added successfully");
             } else {
                 console.error("Error adding product");
@@ -94,6 +93,7 @@ export default function CreateNewProductDialog({
             <DialogTitle variant="h3" fontSize={20} marginTop={2}>
                 Create Product
             </DialogTitle>
+
             <DialogContent>
                 <DialogContentText marginTop={2}>
                     Each product will have a <strong>matinee</strong> /{" "}
