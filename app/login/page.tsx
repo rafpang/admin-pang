@@ -59,6 +59,9 @@ export default function LoginPage() {
                     expires: accessExpirationTimeInSeconds / (60 * 60 * 24),
                 });
                 router.push("/");
+            } else {
+                setIsLoading(false);
+                setErrorLogin(false);
             }
         } catch (error) {
             setErrorLogin(true);
