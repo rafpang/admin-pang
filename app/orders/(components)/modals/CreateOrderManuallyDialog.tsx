@@ -224,7 +224,12 @@ export default function CreateOrderManuallyDialog({
                                 <Grid item xs={12}>
                                     <Autocomplete
                                         fullWidth
-                                        options={["card", "paynow", "transfer"]}
+                                        options={[
+                                            "card",
+                                            "paynow",
+                                            "transfer",
+                                            "invitation",
+                                        ]}
                                         value={paymentMethod}
                                         onChange={(_, newValue) =>
                                             setPaymentMethod(newValue as string)
