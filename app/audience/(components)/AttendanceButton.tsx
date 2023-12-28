@@ -23,6 +23,8 @@ export const AttendanceButton = memo(function AttendanceButton({
     const handleToggleAttendance = async () => {
         setAttendance((prevValue) => !prevValue);
         if (attendanceShowTime === "matinee") {
+            // state hasn't changed yet and useEffect causes infinite rerender,
+            // so this will have to do (sorry for the skill issue -rafpang)
             !attendance
                 ? setMatineeAttendanceAddDelta((delta) => delta + 1)
                 : setMatineeAttendanceMinusDelta((delta) => delta + 1);
