@@ -84,7 +84,7 @@ export default function LoginPage() {
                 <Container
                     sx={{
                         display: "flex",
-                        flexDirection: "column", // Stacking vertically
+                        flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "space-around",
                     }}
@@ -108,7 +108,7 @@ export default function LoginPage() {
                 <Typography component="h1" variant="h5" fontWeight={1}>
                     Login
                 </Typography>
-                {errorLogin === true ? (
+                {errorLogin ? (
                     <Typography
                         sx={{ fontSize: 12, color: "red", mt: 2 }}
                         component="h1"
@@ -146,7 +146,7 @@ export default function LoginPage() {
                             />
                         </Grid>
                     </Grid>
-                    {isLoading === true ? (
+                    {isLoading ? (
                         <Grid
                             marginTop={3}
                             marginBottom={3}

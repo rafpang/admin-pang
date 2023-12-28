@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import AttendanceContextProvider from "./(contexts)/AttendanceContext";
 
 export default function RootLayout({
     children,
@@ -18,11 +17,7 @@ export default function RootLayout({
                     httpEquiv="Content-Security-Policy"
                     content="upgrade-insecure-requests"
                 />
-                <body>
-                    <AttendanceContextProvider>
-                        {children}
-                    </AttendanceContextProvider>
-                </body>
+                <body>{children}</body>
             </>
         </html>
     );
