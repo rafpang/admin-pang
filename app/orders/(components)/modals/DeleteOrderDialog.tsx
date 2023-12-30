@@ -9,6 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
+import { CircularProgress, Grid } from "@mui/material";
 
 type DialogPropTypes = {
     open: boolean;
@@ -22,9 +23,11 @@ export default function DeleteOrderDialog({
     orderId,
 }: DialogPropTypes) {
     const [deleteAudience, setDeleteAudience] = useState<boolean>(false);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     async function handleDelete(e: any) {
         e.preventDefault();
+        setIsDeleting(true);
         const response = await fetch(
             deleteAudience
                 ? `${API_URL}/orders/protected/audiences/${orderId}`
@@ -38,40 +41,67 @@ export default function DeleteOrderDialog({
                 },
             }
         );
-        if (response.ok) handleClose();
+        if (response.ok) {
+            setIsDeleting(false);
+            handleClose();
+        }
     }
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth>
-            <form onSubmit={handleDelete}>
-                <DialogTitle variant="h3" fontSize={20} marginTop={2}>
-                    Delete Order
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText marginTop={2} marginBottom={5}>
-                        {`Are you sure that you want to delete order with Order ID ${orderId}?`}
-                    </DialogContentText>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={deleteAudience}
-                                onChange={() =>
-                                    setDeleteAudience(
-                                        (deleteAudience) => !deleteAudience
-                                    )
-                                }
-                            />
-                        }
-                        label="Delete Audience with this Order ID"
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button type="button" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button type="submit">Delete Order</Button>
-                </DialogActions>
-            </form>
+            <DialogTitle variant="h3" fontSize={20} marginTop={2}>
+                Delete Order
+            </DialogTitle>
+            <DialogContent>
+                {isDeleting ? (
+                    <Grid
+                        container
+                        minHeight={300}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <CircularProgress size={120} />
+                        </Grid>
+                    </Grid>
+                ) : (
+                    <form onSubmit={handleDelete}>
+                        <DialogContentText marginTop={2} marginBottom={5}>
+                            {`Are you sure that you want to delete order with Order ID ${orderId}?`}
+                        </DialogContentText>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={deleteAudience}
+                                    onChange={() =>
+                                        setDeleteAudience(
+                                            (deleteAudience) => !deleteAudience
+                                        )
+                                    }
+                                />
+                            }
+                            label="Delete Audience with this Order ID"
+                        />
+                        <DialogActions>
+                            <Button type="button" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button type="submit">Delete Order</Button>
+                        </DialogActions>
+                    </form>
+                )}
+            </DialogContent>
         </Dialog>
     );
 }

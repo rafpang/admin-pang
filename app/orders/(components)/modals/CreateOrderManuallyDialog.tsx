@@ -10,12 +10,10 @@ import {
     Button,
     CircularProgress,
     MenuItem,
+    Autocomplete,
 } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
 import { usePublicInitialFetch } from "@/app/hooks/fetch";
-import SuccessToast from "@/app/(components)/(small-components)/SuccessToast";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 
 type Order = {
     audienceName: string;
@@ -39,7 +37,7 @@ export default function CreateOrderManuallyDialog({
     handleClose,
     setToastOpen,
 }: DialogPropTypes) {
-    const [isLoading, products] = usePublicInitialFetch("/products");
+    const [isLoadingProducts, products] = usePublicInitialFetch("/products");
     const [isSubmissionLoading, setIsSubmissionLoading] = useState(false);
 
     const [buyerName, setBuyerName] = useState("");
@@ -137,7 +135,7 @@ export default function CreateOrderManuallyDialog({
                 Create Order Manually
             </DialogTitle>
             <DialogContent>
-                {isLoading || isSubmissionLoading ? (
+                {isLoadingProducts || isSubmissionLoading ? (
                     <Grid
                         container
                         minHeight={300}
