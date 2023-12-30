@@ -10,6 +10,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
 import { CircularProgress, Grid } from "@mui/material";
+import { useToastContext } from "@/app/(contexts)/ToastContext";
 
 type DialogPropTypes = {
     open: boolean;
@@ -24,6 +25,7 @@ export default function DeleteOrderDialog({
 }: DialogPropTypes) {
     const [deleteAudience, setDeleteAudience] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const { setToastOpen, setToastMessage } = useToastContext();
 
     async function handleDelete(e: any) {
         e.preventDefault();
@@ -42,9 +44,13 @@ export default function DeleteOrderDialog({
             }
         );
         if (response.ok) {
+            setToastOpen(true);
+            setToastMessage(
+                "Order deleted! Please refresh the page to view changes. You may need to refresh the page several times."
+            );
             setIsDeleting(false);
-            handleClose();
         }
+        handleClose();
     }
 
     return (

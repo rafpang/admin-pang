@@ -2,25 +2,20 @@
 import React, { useState } from "react";
 import { usePublicInitialFetch } from "../hooks/fetch";
 import { useCheckAuth } from "../hooks/auth";
-import {
-    CircularProgress,
-    Container,
-    Divider,
-    Grid,
-    Typography,
-} from "@mui/material";
+import { CircularProgress, Container, Grid, Typography } from "@mui/material";
 import Navbar from "../(components)/Navbar";
 import ProductsDataTable from "./(components)/ProductsDataTable";
 import CreateNewProductDialog from "./(components)/modals/CreateNewProductDialog";
 import ProductActionCard from "./(components)/ProductActionCard";
 import SuccessToast from "../(components)/(small-components)/SuccessToast";
+import { useToastContext } from "../(contexts)/ToastContext";
 
 export default function ProductsPage() {
     useCheckAuth();
 
-    const [toastOpen, setToastOpen] = useState(false);
     const [isLoading, data] = usePublicInitialFetch("/products/");
     const [createOpen, setCreateOpen] = useState<boolean>(false);
+    const { toastOpen, toastMessage, setToastOpen } = useToastContext();
 
     return (
         <Container>
@@ -46,14 +41,6 @@ export default function ProductsPage() {
                 <strong>Products</strong> show all offerings offered to the
                 customers.
             </Typography>
-            {/* <Typography
-                fontStyle={"italic"}
-                sx={{ marginBottom: "30px", textAlign: "center" }}
-                component="h1"
-                variant="h5"
-            >
-                Actions
-            </Typography> */}
             <Grid
                 container
                 gap={2}
@@ -86,10 +73,9 @@ export default function ProductsPage() {
             <CreateNewProductDialog
                 open={createOpen}
                 handleClose={() => setCreateOpen(false)}
-                setToastOpen={setToastOpen}
             />
             <Container sx={{ marginBottom: 5 }}>
-                {isLoading === true ? (
+                {isLoading ? (
                     <Grid
                         container
                         spacing={0}
@@ -109,9 +95,7 @@ export default function ProductsPage() {
             <SuccessToast
                 open={toastOpen}
                 setOpen={setToastOpen}
-                message={
-                    "Product added successfully! Refresh the page to view changes. You may need to refresh a few times."
-                }
+                message={toastMessage}
             />
         </Container>
     );

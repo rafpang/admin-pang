@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import ToastContextProvider from "./(contexts)/ToastContext";
 
 export default function RootLayout({
     children,
@@ -17,7 +18,9 @@ export default function RootLayout({
                     httpEquiv="Content-Security-Policy"
                     content="upgrade-insecure-requests"
                 />
-                <body>{children}</body>
+                <body>
+                    <ToastContextProvider>{children}</ToastContextProvider>
+                </body>
             </>
         </html>
     );

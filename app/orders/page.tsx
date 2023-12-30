@@ -8,6 +8,7 @@ import OrderDataTable from "./(components)/OrderDataTable";
 import OrderActionCard from "./(components)/OrderActionCard";
 import CreateOrderManuallyDialog from "./(components)/modals/CreateOrderManuallyDialog";
 import SuccessToast from "../(components)/(small-components)/SuccessToast";
+import { useToastContext } from "../(contexts)/ToastContext";
 
 export default function OrdersPage() {
     useCheckAuth();
@@ -15,7 +16,7 @@ export default function OrdersPage() {
         "https://api.icnmusical.com/api/v1/orders/protected"
     );
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-    const [toastOpen, setToastOpen] = useState<boolean>(false);
+    const { toastOpen, setToastOpen, toastMessage } = useToastContext();
     return (
         <Container>
             <Navbar />
@@ -75,7 +76,6 @@ export default function OrdersPage() {
                 <CreateOrderManuallyDialog
                     open={isCreateModalOpen}
                     handleClose={() => setIsCreateModalOpen(false)}
-                    setToastOpen={setToastOpen}
                 />
             </Grid>
             <Typography
@@ -108,9 +108,7 @@ export default function OrdersPage() {
             <SuccessToast
                 open={toastOpen}
                 setOpen={setToastOpen}
-                message={
-                    "Order created successfully! Refresh the page to view changes. You may need to refresh the page multiple times."
-                }
+                message={toastMessage}
             />
         </Container>
     );

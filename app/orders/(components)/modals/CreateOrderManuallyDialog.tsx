@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { usePublicInitialFetch } from "@/app/hooks/fetch";
 import Cookies from "js-cookie";
+import { useToastContext } from "@/app/(contexts)/ToastContext";
 
 type Order = {
     audienceName: string;
@@ -29,16 +30,15 @@ type Product = {
 type DialogPropTypes = {
     open: boolean;
     handleClose: () => void;
-    setToastOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function CreateOrderManuallyDialog({
     open,
     handleClose,
-    setToastOpen,
 }: DialogPropTypes) {
     const [isLoadingProducts, products] = usePublicInitialFetch("/products");
     const [isSubmissionLoading, setIsSubmissionLoading] = useState(false);
+    const { setToastOpen, setToastMessage } = useToastContext();
 
     const [buyerName, setBuyerName] = useState("");
     const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -109,6 +109,9 @@ export default function CreateOrderManuallyDialog({
 
             if (response.ok) {
                 setToastOpen(true);
+                setToastMessage(
+                    "Order created successfully! Refresh the page to view changes. You may need to refresh the page several times."
+                );
                 setIsSubmissionLoading(false);
 
                 setPaymentMethod("");

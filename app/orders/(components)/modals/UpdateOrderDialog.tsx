@@ -7,10 +7,11 @@ import {
     DialogTitle,
     TextField,
     Button,
+    CircularProgress,
 } from "@mui/material";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useToastContext } from "@/app/(contexts)/ToastContext";
 
 type OrderDataType = {
     totalPrice: number;
@@ -34,8 +35,7 @@ export default function UpdateOrderDialog({
     orderData,
     orderId,
 }: DialogPropTypes) {
-    const router = useRouter();
-
+    const { setToastOpen, setToastMessage } = useToastContext();
     const [formData, setFormData] = useState<OrderDataType>({
         totalPrice: orderData.totalPrice,
         buyerEmail: orderData.buyerEmail,
@@ -44,8 +44,11 @@ export default function UpdateOrderDialog({
         paymentMethod: orderData.paymentMethod,
         paymentStatus: orderData.paymentStatus,
     });
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
     const handleUpdateOrder = async () => {
+        setIsUpdating(true);
+
         const requestBody: OrderDataType = {
             totalPrice: formData.totalPrice,
             buyerEmail: formData.buyerEmail,
@@ -71,16 +74,20 @@ export default function UpdateOrderDialog({
             );
 
             if (response.ok) {
-                router.push("/orders");
+                setToastOpen(true);
+                setToastMessage(
+                    "Order updated successfully! Refresh the page to view changes. You may need to refresh a few times!"
+                );
                 console.log("Order updated successfully");
             } else {
                 console.error("Error updating order");
             }
+            setIsUpdating(false);
+            handleClose();
         } catch (error) {
             console.error("Fetch error:", error);
+            setIsUpdating(false);
         }
-
-        handleClose();
     };
 
     const handleInputChange = (
@@ -104,88 +111,123 @@ export default function UpdateOrderDialog({
             <DialogTitle variant="h3" fontSize={20} marginTop={2}>
                 Update Order
             </DialogTitle>
-            <DialogContent>
-                <form onSubmit={handleUpdateOrder}>
-                    <Grid container gap={3} spacing={0} marginTop={2}>
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="buyerName"
-                            label="Buyer Name"
-                            variant="standard"
-                            value={formData.buyerName}
-                            onChange={(e) => handleInputChange(e, "buyerName")}
-                        />
-
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="totalPrice"
-                            label="Total Price"
-                            variant="standard"
-                            type="number"
-                            value={formData.totalPrice}
-                            onChange={(e) => handleInputChange(e, "totalPrice")}
-                        />
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="buyerEmail"
-                            label="Buyer Email"
-                            variant="standard"
-                            value={formData.buyerEmail}
-                            onChange={(e) => handleInputChange(e, "buyerEmail")}
-                        />
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="buyerPhoneNumber"
-                            label="Buyer Phone Number"
-                            variant="standard"
-                            value={formData.buyerPhoneNumber}
-                            onChange={(e) =>
-                                handleInputChange(e, "buyerPhoneNumber")
-                            }
-                        />
-
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="paymentMethod"
-                            label="Payment Method"
-                            variant="standard"
-                            value={formData.paymentMethod}
-                            onChange={(e) =>
-                                handleInputChange(e, "paymentMethod")
-                            }
-                        />
-                        <TextField
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="paymentStatus"
-                            label="Payment Status"
-                            variant="standard"
-                            value={formData.paymentStatus}
-                            onChange={(e) =>
-                                handleInputChange(e, "paymentStatus")
-                            }
-                        />
+            {isUpdating ? (
+                <Grid
+                    container
+                    minHeight={300}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <CircularProgress size={120} />
                     </Grid>
+                </Grid>
+            ) : (
+                <DialogContent>
+                    <form onSubmit={handleUpdateOrder}>
+                        <Grid container gap={3} spacing={0} marginTop={2}>
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="buyerName"
+                                label="Buyer Name"
+                                variant="standard"
+                                value={formData.buyerName}
+                                onChange={(e) =>
+                                    handleInputChange(e, "buyerName")
+                                }
+                            />
 
-                    <DialogActions>
-                        <Button type="button" onClick={handleClose}>
-                            Cancel
-                        </Button>
-                        <Button type="submit">Update Order</Button>
-                    </DialogActions>
-                </form>
-            </DialogContent>
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="totalPrice"
+                                label="Total Price"
+                                variant="standard"
+                                type="number"
+                                value={formData.totalPrice}
+                                onChange={(e) =>
+                                    handleInputChange(e, "totalPrice")
+                                }
+                            />
+
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="buyerEmail"
+                                label="Buyer Email"
+                                variant="standard"
+                                value={formData.buyerEmail}
+                                onChange={(e) =>
+                                    handleInputChange(e, "buyerEmail")
+                                }
+                            />
+
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="buyerPhoneNumber"
+                                label="Buyer Phone Number"
+                                variant="standard"
+                                value={formData.buyerPhoneNumber}
+                                onChange={(e) =>
+                                    handleInputChange(e, "buyerPhoneNumber")
+                                }
+                            />
+
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="paymentMethod"
+                                label="Payment Method"
+                                variant="standard"
+                                value={formData.paymentMethod}
+                                onChange={(e) =>
+                                    handleInputChange(e, "paymentMethod")
+                                }
+                            />
+
+                            <TextField
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="paymentStatus"
+                                label="Payment Status"
+                                variant="standard"
+                                value={formData.paymentStatus}
+                                onChange={(e) =>
+                                    handleInputChange(e, "paymentStatus")
+                                }
+                            />
+                        </Grid>
+
+                        <DialogActions>
+                            <Button type="button" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isUpdating}>
+                                Update Order
+                            </Button>
+                        </DialogActions>
+                    </form>
+                </DialogContent>
+            )}
         </Dialog>
     );
 }

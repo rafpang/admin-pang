@@ -4,28 +4,33 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
-    TextField,
     Button,
+    CircularProgress,
+    DialogContentText,
+    TextField,
 } from "@mui/material";
 import Cookies from "js-cookie";
+import { useToastContext } from "@/app/(contexts)/ToastContext";
 
 type DialogPropTypes = {
     open: boolean;
     handleClose: () => void;
-    setToastOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function CreateNewProductDialog({
     open,
     handleClose,
-    setToastOpen,
 }: DialogPropTypes) {
+    const [isAdding, setIsAdding] = useState<boolean>(false);
+    const { setToastOpen, setToastMessage } = useToastContext();
+
     const handleAddProduct = async (
         event: React.FormEvent<HTMLFormElement>
     ) => {
         event.preventDefault();
+        setIsAdding(true);
+
         const formData = new FormData(event.currentTarget);
 
         const productName = formData.get("productName") as string;
@@ -57,7 +62,6 @@ export default function CreateNewProductDialog({
             endPeriodSgt: endPeriodSGT,
             productDescription,
         };
-        console.log(requestBody);
 
         try {
             const response = await fetch(
@@ -76,16 +80,19 @@ export default function CreateNewProductDialog({
 
             if (response.ok) {
                 setToastOpen(true);
-
+                setToastMessage(
+                    "Product added successfully! Please refresh the page to view changes"
+                );
                 console.log("Product added successfully");
             } else {
                 console.error("Error adding product");
             }
         } catch (error) {
             console.error("Fetch error:", error);
+        } finally {
+            setIsAdding(false);
+            handleClose();
         }
-
-        handleClose();
     };
 
     return (
@@ -94,122 +101,131 @@ export default function CreateNewProductDialog({
                 Create Product
             </DialogTitle>
 
-            <DialogContent>
-                <DialogContentText marginTop={2}>
-                    Each product will have a <strong>matinee</strong> /{" "}
-                    <strong>night</strong> option
-                </DialogContentText>
-                <form onSubmit={handleAddProduct}>
-                    <Grid container gap={3} spacing={0} marginTop={2}>
-                        <TextField
-                            required
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="productName"
-                            name="productName"
-                            label="Product Name"
-                            variant="standard"
-                        />
-
-                        <Grid container item spacing={3}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    margin="dense"
-                                    id="matineeTicketPriceSgd"
-                                    name="matineeTicketPriceSgd"
-                                    label="Matinee Ticket Price (SGD)"
-                                    variant="standard"
-                                    type="number" // Specify the input type as number
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    margin="dense"
-                                    id="nightTicketPriceSgd"
-                                    name="nightTicketPriceSgd"
-                                    label="Night Ticket Price (SGD)"
-                                    variant="standard"
-                                    type="number" // Specify the input type as number
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Grid container item spacing={3}>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    margin="dense"
-                                    id="matineeTicketQuantity"
-                                    name="matineeTicketQuantity"
-                                    label="Matinee Ticket Quantity"
-                                    variant="standard"
-                                    type="number" // Specify the input type as number
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    autoFocus
-                                    margin="dense"
-                                    id="nightTicketQuantity"
-                                    name="nightTicketQuantity"
-                                    label="Night Ticket Quantity"
-                                    variant="standard"
-                                    type="number" // Specify the input type as number
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <TextField
-                            required
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="startPeriodSGT"
-                            name="startPeriodSGT"
-                            label="Start Period SGT (eg. 2023-12-10)"
-                            variant="standard"
-                        />
-                        <TextField
-                            required
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="endPeriodSGT"
-                            name="endPeriodSGT"
-                            label="End Period SGT (eg. 2024-11-01) "
-                            variant="standard"
-                        />
-                        <TextField
-                            required
-                            fullWidth
-                            autoFocus
-                            margin="dense"
-                            id="productDescription"
-                            name="productDescription"
-                            label="Product Description"
-                            variant="standard"
-                        />
+            {isAdding ? (
+                <Grid
+                    container
+                    minHeight={300}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <CircularProgress size={120} />
                     </Grid>
+                </Grid>
+            ) : (
+                <form onSubmit={handleAddProduct}>
+                    <DialogContent>
+                        <DialogContentText marginTop={2}>
+                            Each product will have a <strong>matinee</strong> /{" "}
+                            <strong>night</strong> option
+                        </DialogContentText>
+                        <Grid container gap={3} spacing={0} marginTop={2}>
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="productName"
+                                name="productName"
+                                label="Product Name"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="matineeTicketPriceSgd"
+                                name="matineeTicketPriceSgd"
+                                label="Matinee Ticket Price (SGD)"
+                                variant="standard"
+                                type="number"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="nightTicketPriceSgd"
+                                name="nightTicketPriceSgd"
+                                label="Night Ticket Price (SGD)"
+                                variant="standard"
+                                type="number"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="matineeTicketQuantity"
+                                name="matineeTicketQuantity"
+                                label="Matinee Ticket Quantity"
+                                variant="standard"
+                                type="number"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="nightTicketQuantity"
+                                name="nightTicketQuantity"
+                                label="Night Ticket Quantity"
+                                variant="standard"
+                                type="number"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="startPeriodSGT"
+                                name="startPeriodSGT"
+                                label="Start Period SGT (eg. 2023-12-10)"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="endPeriodSGT"
+                                name="endPeriodSGT"
+                                label="End Period SGT (eg. 2024-11-01)"
+                                variant="standard"
+                            />
+                            <TextField
+                                required
+                                fullWidth
+                                autoFocus
+                                margin="dense"
+                                id="productDescription"
+                                name="productDescription"
+                                label="Product Description"
+                                variant="standard"
+                            />
+                        </Grid>
 
-                    <DialogActions>
-                        <Button type="button" onClick={handleClose}>
-                            Cancel
-                        </Button>
-                        <Button type="submit">Add Product</Button>
-                    </DialogActions>
+                        <DialogActions>
+                            <Button type="button" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                            <Button type="submit">Add Product</Button>
+                        </DialogActions>
+                    </DialogContent>
                 </form>
-            </DialogContent>
+            )}
         </Dialog>
     );
 }
