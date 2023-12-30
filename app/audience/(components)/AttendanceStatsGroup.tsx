@@ -17,30 +17,35 @@ export default function AttendanceStatsGroup({
         nightAttendanceMinusDelta,
     } = useAttendanceContext();
 
+    function computeAttendanceValue(stat: any) {
+        let value;
+        if (stat.showTime === "matinee") {
+            value =
+                ((stat.numAttending +
+                    matineeAttendanceAddDelta -
+                    matineeAttendanceMinusDelta) /
+                    stat.totalTickets) *
+                100;
+        } else if (stat.showTime === "night") {
+            value =
+                ((stat.numAttending +
+                    nightAttendanceAddDelta -
+                    nightAttendanceMinusDelta) /
+                    stat.totalTickets) *
+                100;
+        }
+        return value;
+    }
+
     return (
         <>
             {attendanceStats.map((stat: any) => {
-                let value;
-                if (stat.showTime === "matinee") {
-                    value =
-                        ((stat.numAttending +
-                            matineeAttendanceAddDelta -
-                            matineeAttendanceMinusDelta) /
-                            stat.totalTickets) *
-                        100;
-                } else if (stat.showTime === "night") {
-                    value =
-                        ((stat.numAttending +
-                            nightAttendanceAddDelta -
-                            nightAttendanceMinusDelta) /
-                            stat.totalTickets) *
-                        100;
-                }
+                const attendanceValue = computeAttendanceValue(stat);
                 return (
                     <Grid item>
                         <StatCard
                             valueName={stat.showTime}
-                            value={`${value?.toPrecision(3)}%`}
+                            value={`${attendanceValue?.toPrecision(3)}%`}
                             color="black"
                             key={stat.showTime}
                         />
