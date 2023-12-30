@@ -87,7 +87,7 @@ export default function OrdersPage() {
                 Orders Table
             </Typography>
             <Container sx={{ marginBottom: 5 }}>
-                {isLoading === true ? (
+                {isLoading ? (
                     <Grid
                         container
                         spacing={0}
