@@ -122,14 +122,13 @@ export default function CreateOrderManuallyDialog({
                 setOrders([{ audienceName: "", productId: -1, showTime: "" }]);
 
                 console.log("Order created successfully");
+                handleClose();
             } else {
                 console.error("Error creating order");
             }
         } catch (error) {
             console.error("Fetch error:", error);
         }
-
-        handleClose();
     };
 
     return (
