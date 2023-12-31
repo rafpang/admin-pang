@@ -27,7 +27,7 @@ export default function DeleteProductDialog({
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const { setToastOpen, setToastMessage } = useToastContext();
 
-    async function handleDelete(e: any) {
+    async function handleDelete(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setIsDeleting(true);
         const response = await fetch(

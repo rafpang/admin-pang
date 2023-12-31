@@ -71,7 +71,7 @@ export default function CreateOrderManuallyDialog({
         setOrders(updatedOrders);
     };
 
-    const handleCreateOrder = async (e: any) => {
+    const handleCreateOrder = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const trimmedBuyerName = buyerName.trim();
         const trimmedBuyerPhoneNumber = buyerPhoneNumber.trim();

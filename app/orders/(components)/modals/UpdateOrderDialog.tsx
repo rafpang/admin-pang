@@ -46,7 +46,8 @@ export default function UpdateOrderDialog({
     });
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-    const handleUpdateOrder = async () => {
+    const handleUpdateOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setIsUpdating(true);
 
         const requestBody: OrderDataType = {
