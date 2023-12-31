@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import { useToastContext } from "@/app/(contexts)/ToastContext";
 
 type FormDataType = {
@@ -44,9 +43,7 @@ export default function UpdateProductDialog({
     productData,
     productId,
 }: DialogPropTypes) {
-    const router = useRouter();
     const { setToastOpen, setToastMessage } = useToastContext();
-
     const [formData, setFormData] = useState<FormDataType>({
         productName: productData.productName,
         matineeTicketPriceSgd: productData.matineeTicketPriceSgd,
@@ -59,7 +56,6 @@ export default function UpdateProductDialog({
         endPeriodSgt: trimDateString(productData.endPeriodSgt),
         productDescription: productData.productDescription,
     });
-
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
     const handleUpdateProduct = async () => {
