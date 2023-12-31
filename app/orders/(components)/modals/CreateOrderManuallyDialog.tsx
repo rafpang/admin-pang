@@ -16,7 +16,7 @@ import { usePublicInitialFetch } from "@/app/hooks/fetch";
 import Cookies from "js-cookie";
 import { useToastContext } from "@/app/(contexts)/ToastContext";
 
-type Order = {
+type Ticket = {
     audienceName: string;
     productId: number;
     showTime: string;
@@ -44,7 +44,7 @@ export default function CreateOrderManuallyDialog({
     const [paymentMethod, setPaymentMethod] = useState<string>("");
     const [buyerPhoneNumber, setBuyerPhoneNumber] = useState("");
     const [buyerEmail, setBuyerEmail] = useState("");
-    const [orders, setOrders] = useState<Order[]>([
+    const [orders, setOrders] = useState<Ticket[]>([
         { audienceName: "", productId: -1, showTime: "" },
     ]);
 
@@ -61,12 +61,12 @@ export default function CreateOrderManuallyDialog({
         setOrders(updatedOrders);
     };
 
-    const handleOrderChange = (
+    const handleTicketChange = (
         index: number,
-        key: keyof Order,
+        key: keyof Ticket,
         value: string | number
     ) => {
-        const updatedOrders: Order[] = [...orders];
+        const updatedOrders: Ticket[] = [...orders];
         updatedOrders[index] = { ...updatedOrders[index], [key]: value };
         setOrders(updatedOrders);
     };
@@ -112,6 +112,7 @@ export default function CreateOrderManuallyDialog({
                 setToastMessage(
                     "Order created successfully! Refresh the page to view changes. You may need to refresh the page several times."
                 );
+
                 setIsSubmissionLoading(false);
 
                 setPaymentMethod("");
@@ -269,7 +270,7 @@ export default function CreateOrderManuallyDialog({
                                                 variant="standard"
                                                 value={order.audienceName}
                                                 onChange={(e) =>
-                                                    handleOrderChange(
+                                                    handleTicketChange(
                                                         index,
                                                         "audienceName",
                                                         e.target.value
@@ -293,7 +294,7 @@ export default function CreateOrderManuallyDialog({
                                                     ) || null
                                                 }
                                                 onChange={(_, newValue) => {
-                                                    handleOrderChange(
+                                                    handleTicketChange(
                                                         index,
                                                         "productId",
                                                         newValue?.productId ||
@@ -327,7 +328,7 @@ export default function CreateOrderManuallyDialog({
                                                 select
                                                 value={order.showTime}
                                                 onChange={(e) =>
-                                                    handleOrderChange(
+                                                    handleTicketChange(
                                                         index,
                                                         "showTime",
                                                         e.target.value
