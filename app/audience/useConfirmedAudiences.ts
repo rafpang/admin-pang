@@ -1,18 +1,16 @@
 import { useMemo } from "react";
 import { useAuthorizedInitialFetch } from "@/app/hooks/fetch";
 
-function hasMatchingSuccessfulOrder(audienceId: number, ordersData: any[]) {
-    return ordersData.some(
-        (order: any) =>
-            order.audienceId === audienceId &&
-            (order.paymentStatus as string).toLowerCase().includes("successful")
-    );
-}
-
-function findConfirmedAudiences(audienceData: any[], ordersData: any[]) {
-    return audienceData.filter((audience: any) =>
-        hasMatchingSuccessfulOrder(audience.audienceId, ordersData)
-    );
+function findConfirmedAudiences(audienceData: any, ordersData: any) {
+    const filteredData = audienceData.filter((audience: any) => {
+        return ordersData.some((order: any) => {
+            return (
+                order.orderId === audience.orderId &&
+                order.paymentStatus === "successful"
+            );
+        });
+    });
+    return filteredData;
 }
 
 export default function useConfirmedAudiences() {
