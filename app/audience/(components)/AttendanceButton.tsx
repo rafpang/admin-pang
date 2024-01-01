@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { API_URL } from "@/app/settings";
 import { useAttendanceContext } from "@/app/(contexts)/AttendanceContext";
