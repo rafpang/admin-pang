@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import { API_URL } from "@/app/settings";
 import { useAttendanceContext } from "@/app/(contexts)/AttendanceContext";
 
-export const AttendanceButton = memo(function AttendanceButton({
+export default function AttendanceButton({
     attendanceShowTime,
     attendanceStatus,
     audienceId,
@@ -66,6 +66,4 @@ export const AttendanceButton = memo(function AttendanceButton({
             {attendance ? "PRESENT" : "ABSENT"}
         </Button>
     );
-});
-
-export default AttendanceButton;
+}
