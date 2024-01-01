@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -49,7 +49,7 @@ const menuItems = [
     },
 ];
 
-export default function Navbar({ window }: NavbarPropTypes) {
+const Navbar = memo(function Navbar({ window }: NavbarPropTypes) {
     const router = useRouter();
 
     const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -167,4 +167,6 @@ export default function Navbar({ window }: NavbarPropTypes) {
             </Box>
         </Box>
     );
-}
+});
+
+export default Navbar;
