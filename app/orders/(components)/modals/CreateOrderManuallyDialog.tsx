@@ -2,30 +2,22 @@ import React, { useState } from "react";
 import {
     Grid,
     Dialog,
-    DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
-    TextField,
-    Button,
     CircularProgress,
-    MenuItem,
-    Autocomplete,
+    DialogContentText,
+    Button,
+    DialogActions,
+    Container,
 } from "@mui/material";
-import { usePublicInitialFetch } from "@/app/hooks/fetch";
+import BuyerInformation from "./(small-components)/BuyerInformation";
+import PaymentMethod from "./(small-components)/PaymentMethod";
+import TicketDetailsGroup from "./(small-components)/TicketDetailsGroup";
 import Cookies from "js-cookie";
+
+import { usePublicInitialFetch } from "@/app/hooks/fetch";
 import { useToastContext } from "@/app/(contexts)/ToastContext";
-
-type Ticket = {
-    audienceName: string;
-    productId: number;
-    showTime: string;
-};
-
-type Product = {
-    productName: string;
-    productId: number;
-};
+import { BuyerInfo, Ticket } from "./(types)/types";
 
 type DialogPropTypes = {
     open: boolean;
@@ -36,29 +28,37 @@ export default function CreateOrderManuallyDialog({
     open,
     handleClose,
 }: DialogPropTypes) {
-    const [isLoadingProducts, products] = usePublicInitialFetch("/products");
-    const [isSubmissionLoading, setIsSubmissionLoading] = useState(false);
     const { setToastOpen, setToastMessage } = useToastContext();
 
-    const [buyerName, setBuyerName] = useState("");
+    const [isLoadingProducts, products] = usePublicInitialFetch("/products");
+    const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
     const [paymentMethod, setPaymentMethod] = useState<string>("");
-    const [buyerPhoneNumber, setBuyerPhoneNumber] = useState("");
-    const [buyerEmail, setBuyerEmail] = useState("");
-    const [orders, setOrders] = useState<Ticket[]>([
+
+    const [ticketDetails, setTicketDetails] = useState<Ticket[]>([
         { audienceName: "", productId: -1, showTime: "" },
     ]);
 
+    const [buyerInfo, setBuyerInfo] = useState<BuyerInfo>({
+        buyerName: "",
+        buyerPhoneNumber: "",
+        buyerEmail: "",
+    });
+
+    const handleBuyerInputChange = (key: string, value: string) => {
+        setBuyerInfo({ ...buyerInfo, [key]: value });
+    };
+
     const handleAddOrder = () => {
-        setOrders([
-            ...orders,
+        setTicketDetails([
+            ...ticketDetails,
             { audienceName: "", productId: -1, showTime: "" },
         ]);
     };
 
     const handleRemoveOrder = (index: number) => {
-        const updatedOrders = [...orders];
-        updatedOrders.splice(index, 1);
-        setOrders(updatedOrders);
+        const updatedticketDetails = [...ticketDetails];
+        updatedticketDetails.splice(index, 1);
+        setTicketDetails(updatedticketDetails);
     };
 
     const handleTicketChange = (
@@ -66,35 +66,34 @@ export default function CreateOrderManuallyDialog({
         key: keyof Ticket,
         value: string | number
     ) => {
-        const updatedOrders: Ticket[] = [...orders];
-        updatedOrders[index] = { ...updatedOrders[index], [key]: value };
-        setOrders(updatedOrders);
+        const updatedticketDetails: Ticket[] = [...ticketDetails];
+        updatedticketDetails[index] = {
+            ...updatedticketDetails[index],
+            [key]: value,
+        };
+        setTicketDetails(updatedticketDetails);
     };
 
     const handleCreateOrder = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const trimmedBuyerName = buyerName.trim();
-        const trimmedBuyerPhoneNumber = buyerPhoneNumber.trim();
-        const trimmedBuyerEmail = buyerEmail.trim();
-
-        const trimmedOrders = orders.map((order) => ({
-            ...order,
-            audienceName: order.audienceName.trim(),
-        }));
 
         const requestBody = {
-            buyerName: trimmedBuyerName,
-            buyerPhoneNumber: trimmedBuyerPhoneNumber,
-            buyerEmail: trimmedBuyerEmail,
-            orders: trimmedOrders,
+            buyerName: buyerInfo.buyerName.trim(),
+            buyerPhoneNumber: buyerInfo.buyerPhoneNumber.trim(),
+            buyerEmail: buyerInfo.buyerEmail.trim(),
+            orders: ticketDetails.map((tickets) => ({
+                ...tickets,
+                audienceName: tickets.audienceName.trim(),
+            })),
             paymentMethod: paymentMethod.trim(),
             paymentStatus: "successful",
         };
 
         try {
-            setIsSubmissionLoading(true);
+            setIsCreateLoading(true);
+
             const response = await fetch(
-                `https://api.icnmusical.com/api/v1/orders/protected`,
+                `https://api.icnmusical.com/api/v1/ticketDetails/protected`,
                 {
                     method: "POST",
                     headers: {
@@ -113,20 +112,24 @@ export default function CreateOrderManuallyDialog({
                     "Order created successfully! Refresh the page to view changes. You may need to refresh the page several times."
                 );
 
-                setIsSubmissionLoading(false);
+                setIsCreateLoading(false);
 
                 setPaymentMethod("");
-                setBuyerEmail("");
-                setBuyerName("");
-                setBuyerPhoneNumber("");
 
-                setOrders([{ audienceName: "", productId: -1, showTime: "" }]);
+                setBuyerInfo({
+                    buyerName: "",
+                    buyerPhoneNumber: "",
+                    buyerEmail: "",
+                });
+                setTicketDetails([
+                    { audienceName: "", productId: -1, showTime: "" },
+                ]);
 
                 console.log("Order created successfully");
-                handleClose();
             } else {
                 console.error("Error creating order");
             }
+            handleClose();
         } catch (error) {
             console.error("Fetch error:", error);
         }
@@ -137,8 +140,13 @@ export default function CreateOrderManuallyDialog({
             <DialogTitle variant="h3" fontSize={20} marginTop={2}>
                 Create Order Manually
             </DialogTitle>
-            <DialogContent>
-                {isLoadingProducts || isSubmissionLoading ? (
+            <DialogContent
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                }}
+            >
+                {isLoadingProducts || isCreateLoading ? (
                     <Grid
                         container
                         minHeight={300}
@@ -168,220 +176,55 @@ export default function CreateOrderManuallyDialog({
                             least <strong>one ticket</strong>.
                         </DialogContentText>
                         <form onSubmit={handleCreateOrder}>
-                            <Grid container spacing={3} marginTop={2}>
-                                {/* Buyer Information */}
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        autoFocus
-                                        margin="dense"
-                                        id="buyerName"
-                                        name="buyerName"
-                                        label="Buyer Name"
-                                        variant="standard"
-                                        value={buyerName}
-                                        onChange={(e) =>
-                                            setBuyerName(e.target.value)
-                                        }
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        autoFocus
-                                        margin="dense"
-                                        id="buyerPhoneNumber"
-                                        name="buyerPhoneNumber"
-                                        label="Buyer Phone Number"
-                                        variant="standard"
-                                        type="tel"
-                                        value={buyerPhoneNumber}
-                                        onChange={(e) =>
-                                            setBuyerPhoneNumber(e.target.value)
-                                        }
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        autoFocus
-                                        margin="dense"
-                                        id="buyerEmail"
-                                        name="buyerEmail"
-                                        label="Buyer Email"
-                                        variant="standard"
-                                        type="email"
-                                        value={buyerEmail}
-                                        onChange={(e) =>
-                                            setBuyerEmail(e.target.value)
-                                        }
-                                    />
-                                </Grid>
+                            <Grid container spacing={2} marginTop={2}>
+                                <BuyerInformation
+                                    buyerInfo={buyerInfo}
+                                    onBuyerInputChange={handleBuyerInputChange}
+                                />
 
-                                {/* Payment Method */}
-                                <Grid item xs={12}>
-                                    <Autocomplete
-                                        fullWidth
-                                        options={[
-                                            "card",
-                                            "paynow",
-                                            "transfer",
-                                            "invitation",
-                                        ]}
-                                        value={paymentMethod}
-                                        onChange={(_, newValue) =>
-                                            setPaymentMethod(newValue as string)
-                                        }
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                required
-                                                fullWidth
-                                                autoFocus
-                                                margin="dense"
-                                                id="paymentMethod"
-                                                label="Payment Method"
-                                                variant="standard"
-                                            />
-                                        )}
-                                    />
-                                </Grid>
+                                <PaymentMethod
+                                    paymentMethod={paymentMethod}
+                                    onPaymentMethodChange={setPaymentMethod}
+                                />
 
-                                {/* Order Details */}
-                                {orders.map((order, index) => (
-                                    <Grid
-                                        container
-                                        item
-                                        spacing={3}
-                                        key={index}
-                                    >
-                                        <Grid item xs={12} sm={4}>
-                                            <TextField
-                                                required
-                                                fullWidth
-                                                autoFocus
-                                                margin="dense"
-                                                id={`audienceName-${index}`}
-                                                name="audienceName"
-                                                label="Audience Name"
-                                                variant="standard"
-                                                value={order.audienceName}
-                                                onChange={(e) =>
-                                                    handleTicketChange(
-                                                        index,
-                                                        "audienceName",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={4}>
-                                            <Autocomplete
-                                                options={products}
-                                                getOptionLabel={(
-                                                    product: Product
-                                                ) =>
-                                                    `${product.productName} (ID: ${product.productId})`
-                                                }
-                                                value={
-                                                    products.find(
-                                                        (p: any) =>
-                                                            p.productId ===
-                                                            order.productId
-                                                    ) || null
-                                                }
-                                                onChange={(_, newValue) => {
-                                                    handleTicketChange(
-                                                        index,
-                                                        "productId",
-                                                        newValue?.productId ||
-                                                            -1
-                                                    );
-                                                }}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        required
-                                                        fullWidth
-                                                        autoFocus
-                                                        margin="dense"
-                                                        id={`productLabel-${index}`}
-                                                        label="Product"
-                                                        variant="standard"
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={4}>
-                                            <TextField
-                                                required
-                                                fullWidth
-                                                autoFocus
-                                                margin="dense"
-                                                id={`showTime-${index}`}
-                                                name="showTime"
-                                                label="Show Time"
-                                                variant="standard"
-                                                select
-                                                value={order.showTime}
-                                                onChange={(e) =>
-                                                    handleTicketChange(
-                                                        index,
-                                                        "showTime",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            >
-                                                <MenuItem value="matinee">
-                                                    matinee
-                                                </MenuItem>
-                                                <MenuItem value="night">
-                                                    night
-                                                </MenuItem>
-                                            </TextField>
-                                        </Grid>
-                                        {index > 0 && (
-                                            <Grid item xs={12} sm={4}>
-                                                <Button
-                                                    type="button"
-                                                    color="error"
-                                                    variant="contained"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        handleRemoveOrder(index)
-                                                    }
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </Grid>
-                                        )}
-                                    </Grid>
-                                ))}
-                                <Grid item xs={12}>
-                                    <Button
-                                        type="button"
-                                        color="primary"
-                                        variant="contained"
-                                        size="small"
-                                        onClick={handleAddOrder}
-                                    >
-                                        Add audience
-                                    </Button>
-                                </Grid>
+                                <TicketDetailsGroup
+                                    ticketDetails={ticketDetails}
+                                    products={products}
+                                    onAddTicket={handleAddOrder}
+                                    onRemoveTicket={handleRemoveOrder}
+                                    onTicketChange={handleTicketChange}
+                                />
+                                <Container
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "end",
+                                        marginTop: "20px",
+                                        justifyContent: "flex-end",
+
+                                        position: "relative",
+                                        left: "29px",
+                                    }}
+                                >
+                                    <DialogActions>
+                                        <Button
+                                            type="button"
+                                            size="small"
+                                            color="error"
+                                            sx={{ fontSize: 14 }}
+                                            onClick={handleClose}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            size="small"
+                                            sx={{ fontSize: 14 }}
+                                        >
+                                            Create
+                                        </Button>
+                                    </DialogActions>
+                                </Container>
                             </Grid>
-
-                            {/* Dialog Actions */}
-                            <DialogActions>
-                                <Button type="button" onClick={handleClose}>
-                                    Cancel
-                                </Button>
-                                <Button type="submit" size="small">
-                                    Create Order
-                                </Button>
-                            </DialogActions>
                         </form>
                     </>
                 )}
