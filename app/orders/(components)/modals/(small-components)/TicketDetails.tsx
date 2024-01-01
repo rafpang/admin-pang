@@ -93,27 +93,13 @@ const TicketDetails: React.FC<{
                         </TextField>
                     </Grid>
                     {index > 0 && (
-                        <Grid
-                            item
-                            container
-                            xs={2}
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
+                        <Grid item container xs={2}>
                             <Button
                                 type="button"
                                 color="error"
                                 variant="contained"
                                 size="small"
                                 fullWidth
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
                                 onClick={() => onRemoveTicket(index)}
                             >
                                 <RemoveCircleIcon />
