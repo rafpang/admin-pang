@@ -25,42 +25,29 @@ export default function CreateNewProductDialog({
     const [isAdding, setIsAdding] = useState<boolean>(false);
     const { setToastOpen, setToastMessage } = useToastContext();
 
-    const handleAddProduct = async (
-        event: React.FormEvent<HTMLFormElement>
-    ) => {
-        event.preventDefault();
+    const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setIsAdding(true);
 
-        const formData = new FormData(event.currentTarget);
-
-        const productName = formData.get("productName") as string;
-        const matineeTicketPriceSgd = parseFloat(
-            formData.get("matineeTicketPriceSgd") as string
-        );
-        const nightTicketPriceSgd = parseFloat(
-            formData.get("nightTicketPriceSgd") as string
-        );
-        const matineeTicketQuantity = parseInt(
-            formData.get("matineeTicketQuantity") as string,
-            10
-        );
-        const nightTicketQuantity = parseInt(
-            formData.get("nightTicketQuantity") as string,
-            10
-        );
-        const startPeriodSGT = formData.get("startPeriodSGT") as string;
-        const endPeriodSGT = formData.get("endPeriodSGT") as string;
-        const productDescription = formData.get("productDescription") as string;
+        const formData = new FormData(e.currentTarget);
 
         const requestBody = {
-            productName,
-            matineeTicketPriceSgd,
-            nightTicketPriceSgd,
-            matineeMaxQuantity: matineeTicketQuantity,
-            nightMaxQuantity: nightTicketQuantity,
-            startPeriodSgt: startPeriodSGT,
-            endPeriodSgt: endPeriodSGT,
-            productDescription,
+            productName: formData.get("productName") as string,
+            matineeTicketPriceSgd: parseFloat(
+                formData.get("matineeTicketPriceSgd") as string
+            ),
+            nightTicketPriceSgd: parseFloat(
+                formData.get("nightTicketPriceSgd") as string
+            ),
+            matineeMaxQuantity: parseInt(
+                formData.get("matineeTicketQuantity") as string
+            ),
+            nightMaxQuantity: parseInt(
+                formData.get("nightTicketQuantity") as string
+            ),
+            startPeriodSgt: formData.get("startPeriodSGT") as string,
+            endPeriodSgt: formData.get("endPeriodSGT") as string,
+            productDescription: formData.get("productDescription") as string,
         };
 
         try {
