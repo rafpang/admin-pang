@@ -93,7 +93,7 @@ export default function CreateOrderManuallyDialog({
             setIsCreateLoading(true);
 
             const response = await fetch(
-                `https://api.icnmusical.com/api/v1/ticketDetails/protected`,
+                `https://api.icnmusical.com/api/v1/orders/protected`,
                 {
                     method: "POST",
                     headers: {
