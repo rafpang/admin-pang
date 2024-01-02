@@ -179,7 +179,7 @@ export default function CreateNewProductDialog({
                                 margin="dense"
                                 id="startPeriodSGT"
                                 name="startPeriodSGT"
-                                label="Start Period SGT (eg. 2023-12-10)"
+                                label="Start Period SGT (eg. 2023-12-30)"
                                 variant="standard"
                             />
                             <TextField
@@ -189,7 +189,7 @@ export default function CreateNewProductDialog({
                                 margin="dense"
                                 id="endPeriodSGT"
                                 name="endPeriodSGT"
-                                label="End Period SGT (eg. 2024-11-01)"
+                                label="End Period SGT (eg. 2024-11-31)"
                                 variant="standard"
                             />
                             <TextField
