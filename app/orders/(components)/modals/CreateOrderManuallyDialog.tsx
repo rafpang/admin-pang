@@ -29,7 +29,7 @@ export default function CreateOrderManuallyDialog({
     handleClose,
 }: DialogPropTypes) {
     const { setToastOpen, setToastMessage } = useToastContext();
-
+    const [createError, setCreateError] = useState<boolean>(false);
     const [isLoadingProducts, products] = usePublicInitialFetch("/products");
     const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
     const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -56,9 +56,9 @@ export default function CreateOrderManuallyDialog({
     };
 
     const handleRemoveOrder = (index: number) => {
-        const updatedticketDetails = [...ticketDetails];
-        updatedticketDetails.splice(index, 1);
-        setTicketDetails(updatedticketDetails);
+        const updatedTicketDetails = [...ticketDetails];
+        updatedTicketDetails.splice(index, 1);
+        setTicketDetails(updatedTicketDetails);
     };
 
     const handleTicketChange = (
@@ -66,12 +66,12 @@ export default function CreateOrderManuallyDialog({
         key: keyof Ticket,
         value: string | number
     ) => {
-        const updatedticketDetails: Ticket[] = [...ticketDetails];
-        updatedticketDetails[index] = {
-            ...updatedticketDetails[index],
+        const updatedTicketDetails: Ticket[] = [...ticketDetails];
+        updatedTicketDetails[index] = {
+            ...updatedTicketDetails[index],
             [key]: value,
         };
-        setTicketDetails(updatedticketDetails);
+        setTicketDetails(updatedTicketDetails);
     };
 
     const handleCreateOrder = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -111,11 +111,8 @@ export default function CreateOrderManuallyDialog({
                 setToastMessage(
                     "Order created successfully! Refresh the page to view changes. You may need to refresh the page several times."
                 );
-
                 setIsCreateLoading(false);
-
                 setPaymentMethod("");
-
                 setBuyerInfo({
                     buyerName: "",
                     buyerPhoneNumber: "",
@@ -124,14 +121,11 @@ export default function CreateOrderManuallyDialog({
                 setTicketDetails([
                     { audienceName: "", productId: -1, showTime: "" },
                 ]);
-
-                console.log("Order created successfully");
-            } else {
-                console.error("Error creating order");
             }
             handleClose();
         } catch (error) {
-            console.error("Fetch error:", error);
+            setCreateError(true);
+            console.error(`Error: ${error}`);
         }
     };
 
@@ -166,6 +160,34 @@ export default function CreateOrderManuallyDialog({
                             }}
                         >
                             <CircularProgress size={120} />
+                        </Grid>
+                    </Grid>
+                ) : createError ? (
+                    <Grid
+                        container
+                        minHeight={300}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <DialogContentText
+                                marginTop={2}
+                                sx={{ color: "red" }}
+                            >
+                                There was an error creating this order. Please
+                                try again!
+                            </DialogContentText>
                         </Grid>
                     </Grid>
                 ) : (
