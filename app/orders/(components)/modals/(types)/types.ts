@@ -14,3 +14,9 @@ export type BuyerInfo = {
     buyerPhoneNumber: string;
     buyerEmail: string;
 };
+
+export type CompleteOrder = {
+    totalPrice: number;
+    paymentMethod: string;
+    paymentStatus: string;
+} & BuyerInfo;

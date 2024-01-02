@@ -9,18 +9,10 @@ import {
     Button,
     CircularProgress,
 } from "@mui/material";
+import { useToastContext } from "@/app/(contexts)/ToastContext";
+import { CompleteOrder } from "./(types)/types";
 import { API_URL } from "@/app/settings";
 import Cookies from "js-cookie";
-import { useToastContext } from "@/app/(contexts)/ToastContext";
-
-type OrderDataType = {
-    totalPrice: number;
-    buyerEmail: string;
-    buyerPhoneNumber: string;
-    buyerName: string;
-    paymentMethod: string;
-    paymentStatus: string;
-};
 
 type DialogPropTypes = {
     open: boolean;
@@ -36,7 +28,7 @@ export default function UpdateOrderDialog({
     orderId,
 }: DialogPropTypes) {
     const { setToastOpen, setToastMessage } = useToastContext();
-    const [formData, setFormData] = useState<OrderDataType>({
+    const [formData, setFormData] = useState<CompleteOrder>({
         totalPrice: orderData.totalPrice,
         buyerEmail: orderData.buyerEmail,
         buyerPhoneNumber: orderData.buyerPhoneNumber,
@@ -50,7 +42,7 @@ export default function UpdateOrderDialog({
         e.preventDefault();
         setIsUpdating(true);
 
-        const requestBody: OrderDataType = {
+        const requestBody: CompleteOrder = {
             totalPrice: formData.totalPrice,
             buyerEmail: formData.buyerEmail,
             buyerPhoneNumber: formData.buyerPhoneNumber,
@@ -93,7 +85,7 @@ export default function UpdateOrderDialog({
 
     const handleInputChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        key: keyof OrderDataType
+        key: keyof CompleteOrder
     ) => {
         let value;
         if (key === "totalPrice") {
