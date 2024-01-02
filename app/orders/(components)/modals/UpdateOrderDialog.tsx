@@ -42,13 +42,8 @@ export default function UpdateOrderDialog({
         e.preventDefault();
         setIsUpdating(true);
 
-        const requestBody: CompleteOrder = {
-            totalPrice: formData.totalPrice,
-            buyerEmail: formData.buyerEmail,
-            buyerPhoneNumber: formData.buyerPhoneNumber,
-            buyerName: formData.buyerName,
-            paymentMethod: formData.paymentMethod,
-            paymentStatus: formData.paymentStatus,
+        const requestBody = {
+            ...formData,
         };
 
         try {
