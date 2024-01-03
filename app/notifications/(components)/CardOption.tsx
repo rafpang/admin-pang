@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 
-type NotificationCardPropTypes = {
+type CardOptionProps = {
     name: string;
     description: string;
     navigateTo: string;
@@ -15,7 +15,7 @@ export default function CardOption({
     name,
     description,
     navigateTo,
-}: NotificationCardPropTypes) {
+}: CardOptionProps) {
     const router = useRouter();
     return (
         <Card
