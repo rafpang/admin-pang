@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-type NotificationCardPropTypes = {
+type ProductActionCardProps = {
     name: string;
     description: string;
     onClick: () => void;
@@ -13,7 +13,7 @@ export default function ProductActionCard({
     name,
     description,
     onClick,
-}: NotificationCardPropTypes) {
+}: ProductActionCardProps) {
     return (
         <Card
             sx={{ width: 345, cursor: "pointer", boxShadow: 10, height: 130 }}

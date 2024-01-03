@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 
 import Typography from "@mui/material/Typography";
 
-type NotificationCardPropTypes = {
+type OrderActionCardProps = {
     name: string;
     description: string;
     onClick: React.MouseEventHandler<HTMLDivElement>;
@@ -14,7 +14,7 @@ export default function OrderActionCard({
     name,
     description,
     onClick,
-}: NotificationCardPropTypes) {
+}: OrderActionCardProps) {
     return (
         <Card
             sx={{ width: 345, cursor: "pointer", boxShadow: 10, height: 130 }}
